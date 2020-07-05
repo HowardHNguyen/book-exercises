@@ -16,3 +16,17 @@ library("dplyr")
 # `left_join()` to join on the "airlines" dataframe
 # Which airline had the smallest average arrival delay?
 
+#identify the airline carrier that has the highest # of delayed flights
+has_most_delays <- flights %>% #start withthe flights
+  group_by(carrier) %>%     #group by airline carrier
+  filter(dep_delay > 0) %>% #find only the delays
+  summarize(num_delay = n()) %>%  #count the observations
+  filter(num_delay == max(num_delay)) %>% #find the most delayed
+  select(carrier) #select the airline
+
+has_most_delays
+
+most_delay_name <- has_most_delays %>% #start with previous result
+  left_join(airlines, by = "carrier") %>% # join on airline ID
+  select(name) #select airlin name
+print(most_delay_name$name) #access the value of the tibble
